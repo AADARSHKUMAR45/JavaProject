@@ -32,7 +32,7 @@ public class StudentManagementSystem {
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt();
-            scanner.nextLine();  // Clear buffer
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -56,7 +56,7 @@ public class StudentManagementSystem {
     static void addStudent() {
         System.out.print("Enter Student ID: ");
         int id = scanner.nextInt();
-        scanner.nextLine();  // Clear buffer
+        scanner.nextLine();
 
         System.out.print("Enter Student Name: ");
         String name = scanner.nextLine();
