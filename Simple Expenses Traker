@@ -1,0 +1,108 @@
+
+import java.io.*;
+import java.util.*;
+
+class Expense {
+    String category;
+    double amount;
+    String date;
+
+    Expense(String category, double amount, String date) {
+        this.category = category;
+        this.amount = amount;
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return date + " | " + category + " | ₹" + amount;
+    }
+}
+
+public class ExpenseTracker {
+    static List<Expense> expenses = new ArrayList<>();
+    static final String FILE_NAME = "expenses.txt";
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        loadExpenses();
+
+        while (true) {
+            System.out.println("\n📌 Expense Tracker Menu:");
+            System.out.println("1. Add Expense");
+
+System.out.println("2. View All Expenses");
+            System.out.println("3. Show Total");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1 -> addExpense();
+                case 2 -> viewExpenses();
+                case 3 -> showTotal();
+                case 4 -> {
+                    saveExpenses();
+                    System.out.println("✅ Data saved. Exiting...");
+                    return;
+                }
+                default -> System.out.println("❌ Invalid choice.");
+            }
+        }
+    }
+
+    static void addExpense() {
+        System.out.print("Enter category: ");
+        String category = sc.nextLine();
+        System.out.print("Enter amount: ");
+        double amount = sc.nextDouble();
+        sc.nextLine();
+        System.out.print("Enter date (dd-mm-yyyy): ");
+        String date = sc.nextLine();
+
+        expenses.add(new Expense(category, amount, date));
+        System.out.println("✅ Expense added.");
+    }
+
+    static void viewExpenses() {
+        if (expenses.isEmpty()) {
+            System.out.println("No expenses yet.");
+            return;
+        }
+
+System.out.println("\n🧾 Your Expenses:");
+        for (Expense e : expenses) {
+            System.out.println(e);
+        }
+    }
+
+    static void showTotal() {
+        double total = 0;
+        for (Expense e : expenses) total += e.amount;
+        System.out.println("💰 Total Spent: ₹" + total);
+    }
+
+    static void saveExpenses() {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(FILE_NAME))) {
+            for (Expense e : expenses) {
+                pw.println(e.category + "," + e.amount + "," + e.date);
+            }
+        } catch (IOException e) {
+            System.out.println("❌ Error saving file.");
+        }
+    }
+
+    static void loadExpenses() {
+        try (Scanner fileScanner = new Scanner(new File(FILE_NAME))) {
+            while (fileScanner.hasNextLine()) {
+                String[] data = fileScanner.nextLine().split(",");
+                if (data.length == 3) {
+                    expenses.add(new Expense(data[0], Double.parseDouble(data[1]), data[2]));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // File not found, start fresh
+        }
+    }
+}
